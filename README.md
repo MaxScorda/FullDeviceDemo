@@ -1,5 +1,5 @@
 # FullDeviceDemo
- Test different keybords and light 
+ Test different keybords and light on Arduino
 #include <TM1638plus_Model2.h>
 #include <Keypad.h> // 4X4 BUTTONS
 #include <LiquidCrystal.h>
