@@ -26,8 +26,16 @@ void initLiquidCrystal() {
   pinMode(buttonPin, INPUT);
 }
 
-String padS(String sstt, int lens, String charsub) {
+
+String padD(String sstt, int lens, String charsub) {
+  //pad a dx
   String spaces = "";
   for (int i = sstt.length(); i < lens; i++) spaces = spaces + charsub;
-  return spaces+sstt;
+  return sstt + spaces;
+}
+String padS(String sstt, int lens, String charsub) {
+  //pad a sx
+  String spaces = "";
+  for (int i = sstt.length(); i < lens; i++) spaces = spaces + charsub;
+  return spaces + sstt;
 }

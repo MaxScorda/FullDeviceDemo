@@ -72,7 +72,7 @@ void setup() {
 }
 
 void loop() {
-  // non funziona readTM1638 e crystaldisplay
+ // non funziona readTM1638 e crystaldisplay
   read4RedButtons();
   Serial.print("  -   ");
   read4ExtButtons() ;

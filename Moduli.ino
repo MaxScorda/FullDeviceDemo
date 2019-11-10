@@ -29,27 +29,31 @@ void write8Led() {
   // 8 Led
   tempTick = (contick % 8);
   digitalWrite(selLed[0], bitRead(tempTick, 0));
-  digitalWrite(selLed[1], bitRead(tempTick , 1));
-  digitalWrite(selLed[2], bitRead(tempTick , 2));
+  digitalWrite(selLed[1], bitRead(tempTick, 1));
+  digitalWrite(selLed[2], bitRead(tempTickt, 2));
   digitalWrite(outLed[0], false);
+
 }
 
 void readTM1638() {
   unsigned char buttons = module.ReadKey16();
+#define buffer_len 9
+  char buffer[buffer_len];
+  String vars;
 
   if (buttons)  {
     Serial.println(buttons);
-  //  module.DisplayStr(buttons, 0);
-    module.DisplayDecNum(buttons, 0, false);
-    //Serial.print("  ");
-    //Serial.println( displayDigits);
+    vars = padS(String(buttons), 8, " ");
+    vars.toCharArray(buffer, buffer_len);
+    module.DisplayStr(buffer, 0);
+    //module.DisplayDecNum(buttons, 0, false);
   }
 
 }
 
 //-------------liquid crystal
 void scrollLiquidCrystal() {
-  if (millis() % refreshSeconds == 0 && previous != millis()) {
+  if (previous + refreshSeconds >= millis()) {
     previous =  millis();
     elabKey();
     pos1 = scrollLineAuto(line1, 0, pos1);
@@ -69,18 +73,23 @@ void elabKey() {
   switch (lcd_key) {              // depending on which button was pushed, we perform an action
     case btnRIGHT:
       lcd.print("RIGHT ");
+      Serial.println("RIGHT ");
       break;
     case btnLEFT:
       lcd.print("LEFT   ");
+      Serial.println("LEFT ");
       break;
     case btnUP:
       lcd.print("UP    ");
+      Serial.println("UP ");
       break;
     case btnDOWN:
       lcd.print("DOWN  ");
+      Serial.println("DOWN ");
       break;
     case btnSELECT:
       //   lcd.print("SELECT");
+      Serial.println("SELECT ");
       break;
     case btnNONE:
       // lcd.print("NONE  ");
