@@ -20,17 +20,16 @@ int adc_key_in  = 0;
 
 int buttonPin = 0;
 unsigned long previous = 0;
-int refreshSeconds = 300;
 boolean startbanner = true;
 boolean juststart = false;
-int pos1 = 0;
-int pos2 = 0;
-char line1[] = "Il pezzo d'hardware piu' inutile che abbia mai fatto. E ci sto pure a perdere tempo.";
+String line1= "Il pezzo d'hardware piu' inutile che abbia mai fatto. E ci sto pure a perdere tempo.";
 char line2[] = " Una realizazione Cane Nico Morto Production (c) 2014 ";
 
 //contatori
-unsigned contick = 0;
+unsigned long contick = 0;
 char tempTick = 0;
+unsigned long prevTimer = millis();
+int mainInterval;
 
 // 4X4 BUTTONS
 const byte numRows = 4; //number of rows on the keypad
@@ -59,7 +58,7 @@ int outLed[] = { 31};
 
 // TM1638 16 tasti
 // define a module on data pin 8, clock pin 9 and strobe pin 7
-TM1638plus_Model2 module(STROBE_TM, CLOCK_TM , DIO_TM);
+TM1638plus_Model2 module(STROBE_TM, CLOCK_TM , DIO_TM, true);
 
 void setup() {
   Serial.begin(9600);  // serial comms for troubleshooting (always)
@@ -69,10 +68,12 @@ void setup() {
   initLiquidCrystal();
   module.reset();
 
+  mainInterval = 1000;
+
 }
 
 void loop() {
- // non funziona readTM1638 e crystaldisplay
+  // non funziona readTM1638 e crystaldisplay
   read4RedButtons();
   Serial.print("  -   ");
   read4ExtButtons() ;
@@ -82,7 +83,12 @@ void loop() {
   readTM1638();
 
   // chiusura ciclo
+
+  if ((prevTimer + mainInterval) <= millis()) {
+    contick++;
+    prevTimer = millis();
+    Serial.print((String) F(" : ") +  String(contick));
+
+  }
   Serial.println("");
-  delay(150);
-  contick++;
 }

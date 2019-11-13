@@ -30,7 +30,7 @@ void write8Led() {
   tempTick = (contick % 8);
   digitalWrite(selLed[0], bitRead(tempTick, 0));
   digitalWrite(selLed[1], bitRead(tempTick, 1));
-  digitalWrite(selLed[2], bitRead(tempTickt, 2));
+  digitalWrite(selLed[2], bitRead(tempTick, 2));
   digitalWrite(outLed[0], false);
 
 }
@@ -53,43 +53,41 @@ void readTM1638() {
 
 //-------------liquid crystal
 void scrollLiquidCrystal() {
-  if (previous + refreshSeconds >= millis()) {
+  static long previous = millis();
+  int msStop = 500;
+  if (previous + msStop <= millis()) {
     previous =  millis();
     elabKey();
-    pos1 = scrollLineAuto(line1, 0, pos1);
+    lcd.setCursor(0, 0); 
+    lcd.print( ScrollFunction(line1, 0));
     //if (startbanner == true)  pos2 = scrollLineAuto(line2, 1, pos2);
   }
 }
 
 void elabKey() {
-  /*
-    lcd.setCursor(11, 1);           // move cursor to second line "1" and 9 spaces over
-    lcd.print(millis() / 1000);    // display seconds elapsed since power-up
-  */
-
-  lcd.setCursor(0, 0);           // move to the begining of the second line
+  lcd.setCursor(0, 1);           // move to the begining of the second line
   lcd_key = read_LCD_buttons();  // read the buttons
 
   switch (lcd_key) {              // depending on which button was pushed, we perform an action
     case btnRIGHT:
-      lcd.print("RIGHT ");
+      lcd.print(F("RIGHT "));
       Serial.println("RIGHT ");
       break;
     case btnLEFT:
-      lcd.print("LEFT   ");
-      Serial.println("LEFT ");
+      lcd.print(F("LEFT   "));
+      Serial.println(F("LEFT "));
       break;
     case btnUP:
-      lcd.print("UP    ");
-      Serial.println("UP ");
+      lcd.print(F("UP    "));
+      Serial.println(F("UP "));
       break;
     case btnDOWN:
-      lcd.print("DOWN  ");
-      Serial.println("DOWN ");
+      lcd.print(F("DOWN  "));
+      Serial.println(F("DOWN "));
       break;
     case btnSELECT:
-      //   lcd.print("SELECT");
-      Serial.println("SELECT ");
+      //   lcd.print(F("SELECT"));
+      Serial.println(F("SELECT "));
       break;
     case btnNONE:
       // lcd.print("NONE  ");
@@ -98,18 +96,15 @@ void elabKey() {
 }
 
 // read the buttons
-int read_LCD_buttons()
-{
+int read_LCD_buttons() {
   adc_key_in = analogRead(0);      // read the value from the sensor
-  // my buttons when read are centered at these valies: 0, 144, 329, 504, 741
-  // we add approx 50 to those values and check to see if we are close
-  if (adc_key_in > 1000) return btnNONE; // We make this the 1st option for speed reasons since it will be the most likely result
-  // For V1.1 us this threshold
-  if (adc_key_in < 50)   return btnRIGHT;
-  if (adc_key_in < 250)  return btnUP;
-  if (adc_key_in < 450)  return btnDOWN;
-  if (adc_key_in < 650)  return btnLEFT;
-  if (adc_key_in < 850)  return btnSELECT;
+
+  if (adc_key_in < 60)   return btnRIGHT;
+  else if (adc_key_in < 200) return btnUP;
+  else if (adc_key_in < 400) return btnDOWN;
+  else if (adc_key_in < 550) return btnLEFT;
+  else if (adc_key_in < 800) return btnSELECT;
+  else if (adc_key_in > 800) return btnNONE;
 
   return btnNONE;  // when all others fail, return this...
 }
@@ -145,4 +140,17 @@ int scrollLineAuto(char* lline, int riga, int ppos) {
     ppos = -(ppos);
   }
   return ppos;
+}
+
+String ScrollFunction(String lline, int riga) {
+    int copySize = 16;
+    static int ppos = copySize;
+    static String stToPrnt = " " + lline.substring(1, copySize);
+
+    ppos = ppos % lline.length();
+    stToPrnt = stToPrnt.substring(2, copySize) + lline.substring(ppos + 1, 1);
+    ppos++;
+
+    return stToPrnt;
+
 }
