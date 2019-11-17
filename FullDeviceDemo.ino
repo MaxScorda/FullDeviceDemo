@@ -1,6 +1,7 @@
 #include <TM1638plus_Model2.h>
 #include <Keypad.h> // 4X4 BUTTONS
 #include <LiquidCrystal.h>
+#include <TEFX.h>
 
 //liquidCrystal
 // select the pins used on the LCD panel
@@ -22,8 +23,13 @@ int buttonPin = 0;
 unsigned long previous = 0;
 boolean startbanner = true;
 boolean juststart = false;
-String line1= "Il pezzo d'hardware piu' inutile che abbia mai fatto. E ci sto pure a perdere tempo.";
-char line2[] = " Una realizazione Cane Nico Morto Production (c) 2014 ";
+String line1 = "Il pezzo d'hardware piu' inutile che abbia mai fatto. E ci sto pure a perdere tempo. ";
+String line2 = "Una realizazione Cane Nico Morto Production (c) 2014 ";
+String line3 = "Scroll demo di LCD, prova simboli 123-+ 456 ";
+
+TEFX Row0(line1,16);
+TEFX Row1(line2, 16);
+TEFX RowSegment(line3, 8);
 
 //contatori
 unsigned long contick = 0;
@@ -80,6 +86,7 @@ void loop() {
   read4x4Keypad();
   write8Led();
   scrollLiquidCrystal();
+  ScrollSegment();
   readTM1638();
 
   // chiusura ciclo
